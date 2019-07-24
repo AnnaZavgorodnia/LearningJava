@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration form</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/styles/styles.css">
+</head>
+<body ng-app="registration_form" ng-controller="AppCtrl">
+    <div th:replace="partials/header :: header">...</div>
+
+    <div class="form__intro"></div>
+    <div class="form__wrapper">
+        <h2 th:text="#{registration.page.form.name}"></h2>
+        <div class="form__container">
+            <h3 id="resultMessage">{{message}}</h3>
+            <form name="form" autocomplete="off" novalidate ng-submit="form.$valid && sendForm(auth)">
+                <label id="inputUsernameLabel"
+                       for="inputUsername"
+                       th:text="#{registration.page.username}">Username</label>
+                <input class="form__input"
+                       type="text"
+                       id="inputUsername"
+                       placeholder="Username"
+                       required
+                       ng-model="auth.username">
+                <label id="inputFullNameLabel"
+                       for="exampleInputFullName"
+                       th:text="#{registration.page.full.name}">Full Name</label>
+                <input type="text"
+                       class="form__input"
+                       id="exampleInputFullName"
+                       placeholder="Full Name"
+                       required
+                       ng-model="auth.fullName">
+                <label id="inputEmailLabel"
+                       for="inputEmail"
+                       th:text="#{registration.page.email}">Email</label>
+                <input type="email"
+                       class="form__input"
+                       id="inputEmail"
+                       placeholder="Email"
+                       required
+                       ng-model="auth.email">
+                <label id="inputPasswordLabel"
+                       for="inputPassword"
+                       th:text="#{registration.page.password}">Password</label>
+                <input type="password"
+                       class="form__input"
+                       id="inputPassword"
+                       placeholder="Password"
+                       required
+                       ng-model="auth.password">
+                <button type="submit"
+                        class="form__button"
+                        ng-disabled="form.$invalid"
+                        th:text="#{registration.page.button}">
+                    Sign up
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js"></script>
+    <script src="http://code.jquery.com/jquery-1.8.3.js"></script>
+    <script type="text/javascript" src="/js/reg_form.js"></script>
+</body>
+</html>
