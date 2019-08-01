@@ -17,4 +17,10 @@ public class MasterService {
             return dao.findAll();
         }
     }
+
+    public Optional<Master> findById(Long id) {
+        try (MasterDao dao = daoFactory.createMasterDao()) {
+            return dao.findById(id);
+        }
+    }
 }

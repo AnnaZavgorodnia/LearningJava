@@ -15,9 +15,6 @@
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/styles/styles.css">
     <title>All appointments</title>
 </head>
-<script>
-    let appsAtt = '${appointments}';
-</script>
 <body>
 
     <jsp:include page="_menu.jsp"></jsp:include>

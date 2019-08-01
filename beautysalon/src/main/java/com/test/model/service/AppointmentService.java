@@ -5,21 +5,16 @@ import com.test.model.dao.DaoFactory;
 import com.test.model.dao.MasterDao;
 import com.test.model.entity.Appointment;
 import com.test.model.entity.Master;
+import com.test.model.entity.Role;
 
 import java.util.List;
 
 public class AppointmentService {
-    DaoFactory daoFactory = DaoFactory.getInstance();
+    private DaoFactory daoFactory = DaoFactory.getInstance();
 
-    public List<Appointment> getAllAppointmentsByClient_Username(String username){
+    public List<Appointment> getAllAppointmentsByClientOrMaster_Username(String username, Role role){
         try (AppointmentDao dao = daoFactory.createAppointmentDao()) {
-            return dao.findAllByClient_Username(username);
-        }
-    }
-
-    public List<Appointment> getAllAppointmentsByMaster_Username(String username) {
-        try (AppointmentDao dao = daoFactory.createAppointmentDao()) {
-            return dao.findAllByMaster_Username(username);
+            return dao.findAllByClientOrMaster_Username(username, role);
         }
     }
 

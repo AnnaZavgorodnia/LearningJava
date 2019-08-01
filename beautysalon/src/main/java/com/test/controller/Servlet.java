@@ -1,7 +1,6 @@
 package com.test.controller;
 
 import com.test.controller.command.*;
-import com.test.model.entity.User;
 import com.test.model.service.AppointmentService;
 import com.test.model.service.MasterService;
 import com.test.model.service.UserService;
@@ -13,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @WebServlet({ "/app/*" })
@@ -29,9 +27,10 @@ public class Servlet extends HttpServlet {
         commands.put("login" , new LoginCommand(new UserService()));
         commands.put("logout" , new LogoutCommand());
         commands.put("masters", new AllMastersCommand(new MasterService()));
-        commands.put("create_app", new CreateAppointmentCommand());
+        commands.put("create_app", new CreateAppointmentPageCommand(new MasterService()));
         commands.put("me/appointments", new AllUsersAppointmentsCommand(new AppointmentService()));
-        commands.put("all_appointments", new AllAppointmentsCommand(new AppointmentService()));
+        commands.put("all_appointments", new AllAppointmentsPageCommand());
+        commands.put("api/all_appointments", new AllAppointmentsApiCommand(new AppointmentService()));
     }
 
     public void doGet(HttpServletRequest request,
@@ -51,7 +50,9 @@ public class Servlet extends HttpServlet {
         path = path.replaceAll(".*app/", "");
         Command command = commands.getOrDefault(path, new HomeCommand());
         String page = command.execute(request);
-        if (page.contains("redirect")) {
+        if(path.contains("api")) {
+            response.getWriter().write(page);
+        } else if (page.contains("redirect")) {
             response.sendRedirect(page.replace("redirect:", ""));
         } else {
             request.getRequestDispatcher(request.getContextPath() + page).forward(request, response);

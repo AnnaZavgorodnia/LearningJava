@@ -19,7 +19,7 @@ public class AllUsersAppointmentsCommand implements Command {
     @Override
     public String execute(HttpServletRequest request) {
         User user = (User)request.getSession().getAttribute("loginedUser");
-        List<Appointment> appointments = appointmentService.getAllAppointmentsByClient_Username(user.getUsername());
+        List<Appointment> appointments = appointmentService.getAllAppointmentsByClientOrMaster_Username(user.getUsername(), user.getRole());
         request.setAttribute("appointments", appointments);
         return "/WEB-INF/views/user_apps.jsp";
     }

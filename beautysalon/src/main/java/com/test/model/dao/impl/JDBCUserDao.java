@@ -29,7 +29,6 @@ public class JDBCUserDao implements UserDao {
             ResultSet rs = ps.executeQuery();
 
             UserMapper userMapper = new UserMapper();
-            List<User> users = new ArrayList<>();
 
             if(rs.next()) {
                 return Optional.of(userMapper
@@ -48,7 +47,7 @@ public class JDBCUserDao implements UserDao {
     }
 
     @Override
-    public Optional<User> findById(int id) {
+    public Optional<User> findById(Long id) {
         return Optional.empty();
     }
 
@@ -82,7 +81,7 @@ public class JDBCUserDao implements UserDao {
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(Long id) {
 
     }
 
