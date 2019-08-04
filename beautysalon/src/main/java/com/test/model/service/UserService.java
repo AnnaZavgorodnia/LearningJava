@@ -22,4 +22,10 @@ public class UserService {
             return dao.findByUsername(username);
         }
     }
+
+    public void createUser(User user) {
+        try (UserDao dao = daoFactory.createUserDao()) {
+            dao.create(user);
+        }
+    }
 }

@@ -2,11 +2,10 @@ package com.test.model.service;
 
 import com.test.model.dao.AppointmentDao;
 import com.test.model.dao.DaoFactory;
-import com.test.model.dao.MasterDao;
 import com.test.model.entity.Appointment;
-import com.test.model.entity.Master;
 import com.test.model.entity.Role;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class AppointmentService {
@@ -21,6 +20,18 @@ public class AppointmentService {
     public List<Appointment> findAll() {
         try (AppointmentDao dao = daoFactory.createAppointmentDao()) {
             return dao.findAll();
+        }
+    }
+
+    public List<Appointment> findAllByMasterIdAndDate(Long masterId, LocalDate date) {
+        try (AppointmentDao dao = daoFactory.createAppointmentDao()) {
+            return dao.findAllByMasterIdAndDate(masterId, date);
+        }
+    }
+
+    public void create(Appointment app) {
+        try (AppointmentDao dao = daoFactory.createAppointmentDao()) {
+            dao.create(app);
         }
     }
 }

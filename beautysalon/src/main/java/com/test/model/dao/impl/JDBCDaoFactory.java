@@ -9,7 +9,8 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class JDBCDaoFactory extends DaoFactory {
+public class JDBCDaoFactory extends DaoFactory  {
+
     private DataSource dataSource = ConnectionPoolHolder.getDataSource();
 
     @Override

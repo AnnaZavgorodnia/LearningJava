@@ -19,20 +19,6 @@ h1, h2, h3, h4, h5, h6 {
 
 /* intro */
 
-
-/*.intro{*/
-/*    display: flex;*/
-/*    flex-direction: column;*/
-/*    justify-content: center;*/
-
-/*    width: 100%;*/
-/*    height: 100vh;*/
-
-/*    white-space: normal;*/
-/*    background: url("/static/images/2.jpg")*/
-/*    center no-repeat;*/
-/*}*/
-
 .video__intro{
     max-height: 100vh;
     overflow: hidden;
@@ -89,16 +75,6 @@ h1, h2, h3, h4, h5, h6 {
 
     margin-bottom: 70px;
 }
-
-/*.intro__title:after{*/
-/*    content: "";*/
-/*    display: block;*/
-/*    width: 60px;*/
-/*    height: 3px;*/
-/*    margin: 60px auto;*/
-
-/*    background-color: #fff;*/
-/*}*/
 
 .intro__subtitle{
     margin-bottom: 14px;
@@ -579,4 +555,3 @@ nav{
 #calendar{
     margin: 40px auto;
 }
-

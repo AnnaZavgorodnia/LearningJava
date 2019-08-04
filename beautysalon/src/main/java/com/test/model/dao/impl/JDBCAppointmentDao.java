@@ -1,11 +1,11 @@
 package com.test.model.dao.impl;
 
-import com.test.App;
 import com.test.model.dao.AppointmentDao;
 import com.test.model.dao.mapper.*;
 import com.test.model.entity.*;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.*;
 
 public class JDBCAppointmentDao implements AppointmentDao {
@@ -75,6 +75,13 @@ public class JDBCAppointmentDao implements AppointmentDao {
             "        on f.master_id=m_id) f3\n" +
             "        left join services ss on f3.service_id=ss.id;";
 
+    //language=SQL
+    private String FIND_APPOINTMENTS_BY_MASTER_ID_AND_DATE = "select ap.id app_id, app_date, app_time from all_appointments ap where master_id=(?) and app_date=(?)";
+
+    //language=SQL
+    private String INSERT_APPOINTMENT = "insert into all_appointments (app_date, app_time, client_id, master_id, service_id)\n" +
+            "values (?,?,?,?,?);";
+
     JDBCAppointmentDao(Connection connection) {
         this.connection = connection;
     }
@@ -101,7 +108,59 @@ public class JDBCAppointmentDao implements AppointmentDao {
 
     @Override
     public void create(Appointment entity) {
+        try(PreparedStatement ps =
+                     connection.prepareStatement(INSERT_APPOINTMENT)){
 
+            ps.setString(1,entity.getAppDate().toString());
+            ps.setString(2,entity.getAppTime().toString());
+            ps.setLong(3,entity.getClient().getId());
+            ps.setLong(4,entity.getMaster().getId());
+            ps.setLong(5,entity.getService().getId());
+
+            int affectedRows = ps.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Creating appointment failed, no rows affected.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            if(connection != null){
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    @Override
+    public List<Appointment> findAllByMasterIdAndDate(Long masterId, LocalDate date) {
+        try (PreparedStatement ps =
+                     connection.prepareStatement(FIND_APPOINTMENTS_BY_MASTER_ID_AND_DATE)) {
+
+            ps.setLong(1,masterId);
+            ps.setString(2,date.toString());
+
+            ResultSet rs = ps.executeQuery();
+
+            AppointmentMapper appMapper = new AppointmentMapper();
+
+            List<Appointment> apps = new ArrayList<>();
+
+            while (rs.next()) {
+                Appointment app = appMapper
+                        .extractFromResultSet(rs);
+                apps.add(app);
+            }
+
+            return apps;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
     }
 
     @Override
@@ -166,5 +225,9 @@ public class JDBCAppointmentDao implements AppointmentDao {
         }
 
         return apps;
+    }
+
+    private Appointment extractAppointment(ResultSet rs){
+        return null;
     }
 }

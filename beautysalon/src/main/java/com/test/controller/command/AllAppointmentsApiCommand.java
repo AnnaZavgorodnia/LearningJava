@@ -25,7 +25,6 @@ public class AllAppointmentsApiCommand implements Command {
                 ? appointmentService.getAllAppointmentsByClientOrMaster_Username(user.getUsername(), user.getRole())
                 : appointmentService.findAll();
 
-        String json = new Gson().toJson(appointments);
-        return json;
+        return new Gson().toJson(appointments);
     }
 }

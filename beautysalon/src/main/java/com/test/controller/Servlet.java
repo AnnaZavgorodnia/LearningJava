@@ -1,5 +1,6 @@
 package com.test.controller;
 
+import com.sun.corba.se.pept.protocol.ClientDelegate;
 import com.test.controller.command.*;
 import com.test.model.service.AppointmentService;
 import com.test.model.service.MasterService;
@@ -31,6 +32,9 @@ public class Servlet extends HttpServlet {
         commands.put("me/appointments", new AllUsersAppointmentsCommand(new AppointmentService()));
         commands.put("all_appointments", new AllAppointmentsPageCommand());
         commands.put("api/all_appointments", new AllAppointmentsApiCommand(new AppointmentService()));
+        commands.put("registration", new RegistrationCommand(new UserService()));
+        commands.put("api/appointments", new MasterAppointmentsApiCommand(new AppointmentService()));
+        commands.put("create_appointment", new CreateAppointmentCommand(new AppointmentService()));
     }
 
     public void doGet(HttpServletRequest request,

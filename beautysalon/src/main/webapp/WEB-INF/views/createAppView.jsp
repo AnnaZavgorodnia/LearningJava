@@ -25,18 +25,20 @@
                 </h3>
             </div>
             <div class="create__app__content">
+                <input type="hidden" value="${master.id}" id="master_id"/>
                 <div class="create__app__master__image" id="masterImg">
                     <img src="${pageContext.request.contextPath}/images/masters/${master.id}.jpg">
                 </div>
                 <div class="input-field">
                     <select id="select-service">
+                        <option value="" disabled selected>Choose your option</option>
                         <c:forEach items="${master.services}" var="i">
-                            <option value="${i.name}"
+                            <option value="${i.id}"
                                     id="${i.name}"
                                     data-price="${i.price}">${i.name}</option>
                         </c:forEach>
                     </select>
-                    <label for="select-service">
+                    <label for="select-service" id="select_label">
                         <fmt:message key="create.appointment.service.title"/>
                     </label>
                     <h5 id="price"></h5>
@@ -57,6 +59,6 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <script src="${pageContext.request.contextPath}/js/create_app.js"></script>
+    <script src="${pageContext.request.contextPath}/js/book_app.js"></script>
 </body>
 </html>

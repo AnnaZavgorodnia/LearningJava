@@ -2,7 +2,7 @@ package com.test.model.dao;
 
 import com.test.model.dao.impl.JDBCDaoFactory;
 
-public abstract class DaoFactory {
+public abstract class DaoFactory{
 
     private static DaoFactory daoFactory;
 
