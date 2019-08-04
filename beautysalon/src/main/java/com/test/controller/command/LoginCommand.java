@@ -45,15 +45,6 @@ public class LoginCommand implements Command  {
 
         AppUtils.storeLoginedUser(request.getSession(), user.get());
 
-        int redirectId = -1;
-        try {
-            redirectId = Integer.parseInt(request.getParameter("redirectId"));
-        } catch (Exception ignored) { }
-        String requestUri = AppUtils.getRedirectAfterLoginUrl(request.getSession(), redirectId);
-        if (requestUri != null) {
-            return "redirect:"+requestUri;
-        } else {
-            return "redirect:/app/home";
-        }
+        return "redirect:/app/home";
     }
 }

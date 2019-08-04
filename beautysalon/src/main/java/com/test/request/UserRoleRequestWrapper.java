@@ -34,11 +34,6 @@ public class UserRoleRequestWrapper extends HttpServletRequestWrapper {
             return realRequest.getUserPrincipal();
         }
 
-        return new Principal() {
-            @Override
-            public String getName() {
-                return user;
-            }
-        };
+        return () -> user;
     }
 }

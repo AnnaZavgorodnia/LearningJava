@@ -21,22 +21,4 @@ public class AppUtils {
     public static User getLoginedUser(HttpSession session) {
         return (User) session.getAttribute("loginedUser");
     }
-
-    public static int storeRedirectAfterLoginUrl(HttpSession session, String requestUri) {
-        Integer id = uri_id_map.get(requestUri);
-
-        if (id == null) {
-            id = REDIRECT_ID++;
-
-            uri_id_map.put(requestUri, id);
-            id_uri_map.put(id, requestUri);
-            return id;
-        }
-
-        return id;
-    }
-
-    public static String getRedirectAfterLoginUrl(HttpSession session, int redirectId) {
-        return id_uri_map.get(redirectId);
-    }
 }

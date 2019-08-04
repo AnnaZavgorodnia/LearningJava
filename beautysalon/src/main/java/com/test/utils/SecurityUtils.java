@@ -9,8 +9,7 @@ import java.util.Set;
 
 public class SecurityUtils {
 
-    public static boolean isSecurityPage(HttpServletRequest request) {
-        String urlPattern = request.getRequestURI();
+    public static boolean isSecurityPage(String urlPattern) {
         Set<Role> roles = SecurityConfig.getAllAppRoles();
 
 
@@ -23,13 +22,11 @@ public class SecurityUtils {
         return false;
     }
 
-    public static boolean hasPermission(HttpServletRequest request) {
-        String urlPattern = request.getRequestURI();
-
+    public static boolean hasPermission(String urlPattern, Role userRole) {
         Set<Role> roles = SecurityConfig.getAllAppRoles();
 
         for (Role role : roles) {
-            if (!request.isUserInRole(role.toString())) {
+            if (role != userRole) {
                 continue;
             }
             List<String> urlPatterns = SecurityConfig.getSecuredRoutesForRole(role);

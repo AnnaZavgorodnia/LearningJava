@@ -19,7 +19,6 @@ public class SecurityFilter implements Filter {
 
     @Override
     public void init(FilterConfig fConfig) throws ServletException {
-
     }
 
     @Override
@@ -28,41 +27,23 @@ public class SecurityFilter implements Filter {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) resp;
 
-        String servletPath = request.getServletPath();
+        String path = request.getRequestURI().replaceAll(".*app/","");
 
-        User loginedUser = AppUtils.getLoginedUser(request.getSession());
-
-        if (servletPath.equals("/login")) {
+        if (path.equals("login")) {
             chain.doFilter(request, response);
             return;
         }
-        HttpServletRequest wrapRequest = request;
 
-        if (loginedUser != null) {
+        User loginedUser = AppUtils.getLoginedUser(request.getSession());
 
-            String userName = loginedUser.getUsername();
-
-            Role role = loginedUser.getRole();
-
-            wrapRequest = new UserRoleRequestWrapper(userName, role.name() , request);
-        }
-
-        if (SecurityUtils.isSecurityPage(request)) {
+        if (SecurityUtils.isSecurityPage(path)) {
 
             if (loginedUser == null) {
-
-                String requestUri = request.getRequestURI();
-
-                int redirectId = AppUtils.storeRedirectAfterLoginUrl(request.getSession(), requestUri);
-
-                response.sendRedirect(wrapRequest.getContextPath() + "/app/login?redirectId=" + redirectId);
+                response.sendRedirect(request.getContextPath() + "/app/login");
                 return;
             }
 
-
-            boolean hasPermission = SecurityUtils.hasPermission(wrapRequest);
-
-            if (!hasPermission) {
+            if (!SecurityUtils.hasPermission(path, loginedUser.getRole())) {
 
                 RequestDispatcher dispatcher
                         = request.getServletContext().getRequestDispatcher("/WEB-INF/views/accessDeniedView.jsp");
@@ -72,11 +53,10 @@ public class SecurityFilter implements Filter {
             }
         }
 
-        chain.doFilter(wrapRequest, response);
+        chain.doFilter(request, response);
     }
 
     @Override
     public void destroy() {
     }
-
 }

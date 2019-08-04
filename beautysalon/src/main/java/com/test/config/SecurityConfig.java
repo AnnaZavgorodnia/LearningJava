@@ -14,29 +14,20 @@ public class SecurityConfig {
 
     private static void init() {
 
-        List<String> urlPatterns1 = new ArrayList<>();
+        securedRoutes.put(Role.CLIENT, Arrays.asList(
+                "masters",
+                "me/appointments",
+                "create_appointment",
+                "create_app",
+                "api/appointments"));
 
-        urlPatterns1.add("/app/masters");
-        urlPatterns1.add("/app/me/appointments");
-        urlPatterns1.add("/app/create_appointment");
-        urlPatterns1.add("/app/create_app");
-        urlPatterns1.add("/app/api/appointments");
+        securedRoutes.put(Role.ADMIN, Arrays.asList(
+                "all_appointments",
+                "api/appointments"));
 
-        securedRoutes.put(Role.CLIENT, urlPatterns1);
-
-        List<String> urlPatterns2 = new ArrayList<>();
-
-        urlPatterns2.add("/app/all_appointments");
-        urlPatterns2.add("/app/api/appointments");
-
-        securedRoutes.put(Role.ADMIN, urlPatterns2);
-
-        List<String> urlPatterns3 = new ArrayList<>();
-
-        urlPatterns3.add("/app/all_appointments");
-        urlPatterns3.add("/app/api/appointments");
-
-        securedRoutes.put(Role.MASTER, urlPatterns3);
+        securedRoutes.put(Role.MASTER, Arrays.asList(
+                "all_appointments",
+                "api/appointments"));
     }
 
     public static List<String> getSecuredRoutesForRole(Role role){
