@@ -108,8 +108,8 @@ public class JDBCAppointmentDao implements AppointmentDao {
 
     @Override
     public void create(Appointment entity) {
-        try{PreparedStatement ps =
-                     connection.prepareStatement(INSERT_APPOINTMENT);
+        try(PreparedStatement ps =
+                     connection.prepareStatement(INSERT_APPOINTMENT)){
 
             ps.setString(1,entity.getAppDate().toString());
             ps.setString(2,entity.getAppTime().toString());
@@ -123,17 +123,8 @@ public class JDBCAppointmentDao implements AppointmentDao {
                 throw new SQLException("Creating appointment failed, no rows affected.");
             }
 
-            ps.close();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if(connection != null){
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
         }
     }
 
@@ -195,7 +186,11 @@ public class JDBCAppointmentDao implements AppointmentDao {
 
     @Override
     public void close() {
-
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private List<Appointment> extractListAppointments(ResultSet rs) throws SQLException {

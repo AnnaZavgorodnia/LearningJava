@@ -124,6 +124,10 @@ public class JDBCMasterDao implements MasterDao {
 
     @Override
     public void close() {
-
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -53,48 +53,47 @@ public class JDBCUserDao implements UserDao {
 
     @Override
     public void create(User entity) {
-        long id = 0;
-        try (PreparedStatement ps =
+        try (PreparedStatement insertUserPs =
                      connection.prepareStatement(INSERT_USER,
-                             Statement.RETURN_GENERATED_KEYS)) {
+                             Statement.RETURN_GENERATED_KEYS);
+             PreparedStatement insertClientPs =
+                     connection.prepareStatement(INSERT_CLIENT)) {
 
-            ps.setString(1, entity.getEmail());
-            ps.setString(2, entity.getFullName());
-            ps.setString(3, entity.getPassword());
-            ps.setString(4, entity.getRole().name());
-            ps.setString(5, entity.getUsername());
+            connection.setAutoCommit(false);
 
-            int affectedRows = ps.executeUpdate();
+            insertUserPs.setString(1, entity.getEmail());
+            insertUserPs.setString(2, entity.getFullName());
+            insertUserPs.setString(3, entity.getPassword());
+            insertUserPs.setString(4, entity.getRole().name());
+            insertUserPs.setString(5, entity.getUsername());
+
+            int affectedRows = insertUserPs.executeUpdate();
 
             if (affectedRows == 0) {
                 throw new SQLException("Creating user failed, no rows affected.");
             }
 
-            try (ResultSet generatedKeys = ps.getGeneratedKeys()) {
+            try (ResultSet generatedKeys = insertUserPs.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
-                    id = generatedKeys.getLong(1);
-                }
-                else {
+
+                    long id = generatedKeys.getLong(1);
+                    insertClientPs.setLong(1, id);
+                    insertClientPs.executeUpdate();
+
+                } else {
                     throw new SQLException("Creating user failed, no ID obtained.");
                 }
             }
+
+            connection.commit();
+
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-
-        try (PreparedStatement ps =
-                     connection.prepareStatement(INSERT_CLIENT,
-                             Statement.RETURN_GENERATED_KEYS)) {
-
-            ps.setLong(1, id);
-
-            int affectedRows = ps.executeUpdate();
-
-            if (affectedRows == 0) {
-                throw new SQLException("Creating client failed, no rows affected.");
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
