@@ -3,11 +3,8 @@ package com.test.model.dao.impl;
 import com.test.model.dao.MasterDao;
 import com.test.model.dao.mapper.MasterMapper;
 import com.test.model.dao.mapper.ServiceMapper;
-import com.test.model.dao.mapper.UserMapper;
-import com.test.model.entity.Client;
 import com.test.model.entity.Master;
 import com.test.model.entity.Service;
-import com.test.model.entity.User;
 
 import java.sql.*;
 import java.util.*;
@@ -15,22 +12,21 @@ import java.util.*;
 public class JDBCMasterDao implements MasterDao {
 
     //language=SQL
-    private String FIND_ALL_MASTERS = "select m.id m_id, email m_email, full_name m_full_name, password m_password, role m_role, instagram m_instagram, position m_position, username m_username from users right join masters m on users.id = m.id";
-
+    private String FIND_ALL_MASTERS = "select m.id m_id, email m_email, full_name m_full_name, password m_password, role m_role, instagram m_instagram, position m_position, username m_username, image_path m_image_path from users right join masters m on users.id = m.id";
 
     //language=SQL
     private String FIND_MASTER_BY_ID = "select m_id, m_email, m_full_name,\n" +
             "       m_password, m_role, m_instagram,\n" +
-            "       m_position, m_username, s_id,\n" +
+            "       m_position, m_username, s_id, m_image_path,\n" +
             "       name s_name, price s_price\n" +
             "from\n" +
             "    (select m_id, m_email, m_full_name, m_password, m_role, m_instagram,\n" +
-            "           m_position, m_username, service_id s_id\n" +
+            "           m_position, m_username, m_image_path, service_id s_id\n" +
             "    from\n" +
             "                  (select m.id m_id, email m_email, full_name m_full_name,\n" +
             "                           password m_password, role m_role,\n" +
             "                           instagram m_instagram, position m_position,\n" +
-            "                           username m_username\n" +
+            "                           username m_username, image_path m_image_path\n" +
             "                    from users\n" +
             "                        right join\n" +
             "                        masters m\n" +
@@ -41,6 +37,14 @@ public class JDBCMasterDao implements MasterDao {
             "        left join services ss\n" +
             "            on f2.s_id=ss.id;";
 
+    //language=SQL
+    private String INSERT_USER = "insert into users (email, full_name, password, role, username) values(?,?,?,?,?);";
+
+    //language=SQL
+    private String INSERT_MASTER = "insert into masters (id,instagram,position, image_path) values(?,?,?,?);";
+
+    //language=SQL
+    private String INSERT_MASTER_SERVICE = "insert into master_service (master_id, service_id) values(?,?);";
 
     private Connection connection;
 
@@ -50,7 +54,61 @@ public class JDBCMasterDao implements MasterDao {
 
     @Override
     public void create(Master entity) {
+        try (PreparedStatement insertUserPs =
+                     connection.prepareStatement(INSERT_USER,
+                             Statement.RETURN_GENERATED_KEYS);
+             PreparedStatement insertMasterPs =
+                     connection.prepareStatement(INSERT_MASTER);
+            PreparedStatement insertMasterServicePs =
+                     connection.prepareStatement(INSERT_MASTER_SERVICE)) {
 
+            connection.setAutoCommit(false);
+
+            insertUserPs.setString(1, entity.getEmail());
+            insertUserPs.setString(2, entity.getFullName());
+            insertUserPs.setString(3, entity.getPassword());
+            insertUserPs.setString(4, entity.getRole().name());
+            insertUserPs.setString(5, entity.getUsername());
+
+            int affectedRows = insertUserPs.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Creating user failed, no rows affected.");
+            }
+
+            try (ResultSet generatedKeys = insertUserPs.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+
+                    long id = generatedKeys.getLong(1);
+                    
+                    insertMasterPs.setLong(1, id);
+                    insertMasterPs.setString(2,entity.getInstagram());
+                    insertMasterPs.setString(3,entity.getPosition().name());
+                    insertMasterPs.setString(4,entity.getImagePath());
+                    
+                    insertMasterPs.executeUpdate();
+
+                    for (Service service: entity.getServices()) {
+                        insertMasterServicePs.setLong(1,id);
+                        insertMasterServicePs.setLong(2,service.getId());
+                        insertMasterServicePs.executeUpdate();
+                    }
+
+                } else {
+                    throw new SQLException("Creating user failed, no ID obtained.");
+                }
+            }
+
+            connection.commit();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     @Override

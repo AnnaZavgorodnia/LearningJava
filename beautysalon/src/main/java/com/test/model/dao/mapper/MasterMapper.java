@@ -20,6 +20,7 @@ public class MasterMapper implements ObjectMapper<Master>{
         master.setRole(Role.valueOf(rs.getString("m_role")));
         master.setPosition(Position.valueOf(rs.getString("m_position")));
         master.setInstagram(rs.getString("m_instagram"));
+        master.setImagePath(rs.getString("m_image_path"));
         return master;
     }
 

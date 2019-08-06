@@ -4,9 +4,11 @@ import com.sun.corba.se.pept.protocol.ClientDelegate;
 import com.test.controller.command.*;
 import com.test.model.service.AppointmentService;
 import com.test.model.service.MasterService;
+import com.test.model.service.SalonServicesService;
 import com.test.model.service.UserService;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @WebServlet({ "/app/*" })
+@MultipartConfig
 public class Servlet extends HttpServlet {
 
     private Map<String, Command> commands = new HashMap<>();
@@ -35,6 +38,9 @@ public class Servlet extends HttpServlet {
         commands.put("registration", new RegistrationCommand(new UserService()));
         commands.put("api/appointments", new MasterAppointmentsApiCommand(new AppointmentService()));
         commands.put("create_appointment", new CreateAppointmentCommand(new AppointmentService()));
+        commands.put("create_master", new CreateMasterPageCommand(new SalonServicesService()));
+        commands.put("add_master", new CreateMasterCommand(new MasterService()));
+        commands.put("me/appointments/delete", new DeleteClientAppointment(new AppointmentService()));
     }
 
     public void doGet(HttpServletRequest request,

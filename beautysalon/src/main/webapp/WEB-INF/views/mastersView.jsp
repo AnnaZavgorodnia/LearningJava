@@ -28,7 +28,7 @@
                 <c:forEach var="i" items="${masters}">
                     <div class="about__item">
                         <div class="about__img">
-                            <img src="/static/images/masters/${i.id}.jpg" />
+                            <img src="${pageContext.request.contextPath}/masters/${i.imagePath}" />
                         </div>
                         <div class="about__text">
                             <h4>${i.fullName}</h4>

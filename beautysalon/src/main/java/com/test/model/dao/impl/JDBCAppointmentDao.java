@@ -14,7 +14,7 @@ public class JDBCAppointmentDao implements AppointmentDao {
 
     //language=SQL
     private String FIND_APPOINTMENTS_BY_CLIENT_USERNAME = "select app_id, app_date, app_time, m_id, m_full_name,\n" +
-            "       m_position, m_email, m_password, m_username,\n" +
+            "       m_position, m_email, m_password, m_username, m_image_path,\n" +
             "       m_instagram, m_role, id s_id, name s_name, price s_price, c_id,\n" +
             "       c_username, c_full_name, c_email, c_password,c_role from\n" +
             "    (select * from\n" +
@@ -26,7 +26,8 @@ public class JDBCAppointmentDao implements AppointmentDao {
             "            on ap.client_id = c.id\n" +
             "        where username=?) f\n" +
             "            left join\n" +
-            "            (select m.id m_id, full_name m_full_name, position m_position, email m_email, username m_username, password m_password, role m_role, instagram m_instagram\n" +
+            "            (select m.id m_id, full_name m_full_name, position m_position, email m_email, " +
+            "               username m_username, password m_password, role m_role, instagram m_instagram, image_path m_image_path\n" +
             "            from masters m\n" +
             "                inner join users u2\n" +
             "                    on m.id = u2.id) f1\n" +
@@ -34,17 +35,21 @@ public class JDBCAppointmentDao implements AppointmentDao {
             "left join services ss on f3.service_id=ss.id;";
 
     //language=SQL
+    private String DELETE_APPOINTMENT_BY_ID = "delete from all_appointments where id=(?);";
+
+    //language=SQL
     private String FIND_APPOINTMENTS_BY_MASTER_USERNAME = "select app_id, app_date, app_time, m_id, m_full_name,\n" +
-            "       m_position, m_email, m_password, m_username,\n" +
+            "       m_position, m_email, m_password, m_username, m_image_path,\n" +
             "       m_instagram, m_role, id s_id, name s_name, price s_price, c_id,\n" +
             "       c_username, c_full_name, c_email, c_password,c_role from\n" +
             "    (select * from\n" +
             "        (select ap.id app_id, app_date, app_time, client_id, service_id,\n" +
             "                m_id, m_full_name, m_position, m_email, m_username, m_password,\n" +
-            "                m_role, m_instagram\n" +
+            "                m_role, m_instagram, m_image_path\n" +
             "         from all_appointments ap\n" +
             "                  inner join\n" +
-            "              (select m.id m_id, full_name m_full_name, position m_position, email m_email, username m_username, password m_password, role m_role, instagram m_instagram\n" +
+            "              (select m.id m_id, full_name m_full_name, position m_position, email m_email, " +
+            "               username m_username, password m_password, role m_role, instagram m_instagram, image_path m_image_path\n" +
             "               from masters m\n" +
             "                        inner join users u2\n" +
             "                                   on m.id = u2.id) ms\n" +
@@ -57,7 +62,7 @@ public class JDBCAppointmentDao implements AppointmentDao {
 
     //language=SQL
     private String FIND_ALL_APPOINTMENTS = "select app_id, app_date, app_time, m_id, m_full_name,\n" +
-            "       m_position, m_email, m_password, m_username,\n" +
+            "       m_position, m_email, m_password, m_username, m_image_path,\n" +
             "       m_instagram, m_role, id s_id, name s_name, price s_price, c_id,\n" +
             "       c_username, c_full_name, c_email, c_password,c_role from\n" +
             "    (select * from\n" +
@@ -68,7 +73,8 @@ public class JDBCAppointmentDao implements AppointmentDao {
             "              (clients c inner join users u on c.id = u.id)\n" +
             "              on ap.client_id = c.id) f\n" +
             "            left join\n" +
-            "        (select m.id m_id, full_name m_full_name, position m_position, email m_email, username m_username, password m_password, role m_role, instagram m_instagram\n" +
+            "        (select m.id m_id, full_name m_full_name, position m_position, email m_email, username m_username, " +
+            "           password m_password, role m_role, instagram m_instagram, image_path m_image_path\n" +
             "         from masters m\n" +
             "                  inner join users u2\n" +
             "                             on m.id = u2.id) f1\n" +
@@ -181,7 +187,14 @@ public class JDBCAppointmentDao implements AppointmentDao {
 
     @Override
     public void delete(Long id) {
+        try (PreparedStatement ps = connection.prepareStatement(DELETE_APPOINTMENT_BY_ID)) {
 
+            ps.setLong(1,id);
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

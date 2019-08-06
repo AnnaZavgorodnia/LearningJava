@@ -119,7 +119,7 @@ public class JDBCUserDao implements UserDao {
             return users;
         } catch (SQLException e) {
             e.printStackTrace();
-            return null;
+            return new ArrayList<>();
         }
     }
 

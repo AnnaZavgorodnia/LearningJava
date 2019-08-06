@@ -34,4 +34,10 @@ public class AppointmentService {
             dao.create(app);
         }
     }
+
+    public void deleteById(Long id) {
+        try (AppointmentDao dao = daoFactory.createAppointmentDao()) {
+            dao.delete(id);
+        }
+    }
 }

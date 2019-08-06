@@ -1,9 +1,6 @@
 package com.test.model.dao.impl;
 
-import com.test.model.dao.AppointmentDao;
-import com.test.model.dao.DaoFactory;
-import com.test.model.dao.MasterDao;
-import com.test.model.dao.UserDao;
+import com.test.model.dao.*;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -26,6 +23,11 @@ public class JDBCDaoFactory extends DaoFactory  {
     @Override
     public AppointmentDao createAppointmentDao() {
         return new JDBCAppointmentDao(getConnection());
+    }
+
+    @Override
+    public ServiceDao createServiceDao() {
+        return new JDBCServiceDao(getConnection());
     }
 
     private Connection getConnection(){

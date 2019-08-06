@@ -32,9 +32,10 @@
                             <p class="card-text"><fmt:message key="master.title"/>: ${i.master.fullName}</p>
                             <p class="card-text"><fmt:message key="service.title"/>: ${i.service.name}</p>
                             <p class="card-text"><fmt:message key="price.title"/>: ${i.service.price}</p>
-                            <button class="btn btn-danger" type="button" data-app-id="${i.id}">
-                                <fmt:message key="button.cancel"/>
-                            </button>
+                            <a href="${pageContext.request.contextPath}/app/me/appointments/delete?appId=${i.id}"
+                               class="btn btn-danger">
+                               <fmt:message key="button.cancel"/>
+                            </a>
                         </div>
                     </div>
                 </c:forEach>

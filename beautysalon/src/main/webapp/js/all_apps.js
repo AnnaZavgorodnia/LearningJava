@@ -12,9 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
             let bla = {};
             bla.title = "Master: " + el.master.fullName +
                 "\nClient: " + el.client.fullName;
-            let date = new Date(el.appDate.year,el.appDate.month-1,el.appDate.day,el.appTime.hour+3);
-            console.log(el.appDate.month);
-            console.log(date);
+            let date = new Date(el.appDate.year,el.appDate.month-1,el.appDate.day,el.appTime.hour-3);
             bla.start = date.toISOString();
             console.log(bla.start);
             return bla;
@@ -33,7 +31,16 @@ document.addEventListener('DOMContentLoaded', function() {
             maxTime: "18:00:00",
             weekends: false,
             events: ar,
-            navLinks: true
+            navLinks: true,
+            eventLimit: true,
+            views: {
+                dayGrid: {
+                    eventLimit: 3
+                },
+                timeGrid: {
+                    eventLimit: 2
+                }
+            }
         });
 
         calendar.render();

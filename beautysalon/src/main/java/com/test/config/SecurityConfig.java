@@ -19,11 +19,14 @@ public class SecurityConfig {
                 "me/appointments",
                 "create_appointment",
                 "create_app",
-                "api/appointments"));
+                "api/appointments",
+                "me/appointments/delete"));
 
         securedRoutes.put(Role.ADMIN, Arrays.asList(
                 "all_appointments",
-                "api/appointments"));
+                "api/appointments",
+                "create_master",
+                "add_master"));
 
         securedRoutes.put(Role.MASTER, Arrays.asList(
                 "all_appointments",

@@ -27,7 +27,7 @@
             <div class="create__app__content">
                 <input type="hidden" value="${master.id}" id="master_id"/>
                 <div class="create__app__master__image" id="masterImg">
-                    <img src="${pageContext.request.contextPath}/images/masters/${master.id}.jpg">
+                    <img src="${pageContext.request.contextPath}/masters/${master.imagePath}">
                 </div>
                 <div class="input-field">
                     <select id="select-service">

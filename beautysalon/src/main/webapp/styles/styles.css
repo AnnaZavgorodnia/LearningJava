@@ -376,6 +376,7 @@ nav{
 .about__item{
     position: relative;
     width: 320px;
+    margin-top: 20px;
 }
 
 .about__item:hover .about__text{
@@ -554,4 +555,8 @@ nav{
 
 #calendar{
     margin: 40px auto;
+}
+
+.fc-slats table{
+    height: 500px; !important;
 }

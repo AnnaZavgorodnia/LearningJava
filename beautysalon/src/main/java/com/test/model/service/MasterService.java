@@ -23,4 +23,10 @@ public class MasterService {
             return dao.findById(id);
         }
     }
+
+    public void create(Master master) {
+        try (MasterDao dao = daoFactory.createMasterDao()) {
+            dao.create(master);
+        }
+    }
 }
