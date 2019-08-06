@@ -15,6 +15,7 @@ public class AllMastersCommand implements Command {
     @Override
     public String execute(HttpServletRequest request) {
         request.setAttribute("masters",masterService.getAllMasters());
+        request.setAttribute("module", "masters");
         return "/WEB-INF/views/mastersView.jsp";
     }
 }

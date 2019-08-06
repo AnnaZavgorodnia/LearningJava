@@ -21,7 +21,7 @@
         <div class="form__container">
             <c:if test="${not empty errorMessage}">
                 <div>
-                    <fmt:message key="login.page.error"/>
+                    <fmt:message key="${errorMessage}"/>
                 </div>
             </c:if>
             <c:if test="${not empty logout}">

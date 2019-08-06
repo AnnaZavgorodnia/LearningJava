@@ -5,50 +5,39 @@ import com.test.model.dao.mapper.MasterMapper;
 import com.test.model.dao.mapper.ServiceMapper;
 import com.test.model.entity.Master;
 import com.test.model.entity.Service;
+import com.test.model.exception.UserAlreadyExistsException;
 
+import java.io.InputStream;
 import java.sql.*;
 import java.util.*;
 
+import static com.test.model.dao.impl.QueryConstants.*;
+
 public class JDBCMasterDao implements MasterDao {
-
-    //language=SQL
-    private String FIND_ALL_MASTERS = "select m.id m_id, email m_email, full_name m_full_name, password m_password, role m_role, instagram m_instagram, position m_position, username m_username, image_path m_image_path from users right join masters m on users.id = m.id";
-
-    //language=SQL
-    private String FIND_MASTER_BY_ID = "select m_id, m_email, m_full_name,\n" +
-            "       m_password, m_role, m_instagram,\n" +
-            "       m_position, m_username, s_id, m_image_path,\n" +
-            "       name s_name, price s_price\n" +
-            "from\n" +
-            "    (select m_id, m_email, m_full_name, m_password, m_role, m_instagram,\n" +
-            "           m_position, m_username, m_image_path, service_id s_id\n" +
-            "    from\n" +
-            "                  (select m.id m_id, email m_email, full_name m_full_name,\n" +
-            "                           password m_password, role m_role,\n" +
-            "                           instagram m_instagram, position m_position,\n" +
-            "                           username m_username, image_path m_image_path\n" +
-            "                    from users\n" +
-            "                        right join\n" +
-            "                        masters m\n" +
-            "                            on users.id = m.id \n" +
-            "                    where m.id=(?)) f \n" +
-            "                      left join master_service ms \n" +
-            "                          on m_id=ms.master_id) f2\n" +
-            "        left join services ss\n" +
-            "            on f2.s_id=ss.id;";
-
-    //language=SQL
-    private String INSERT_USER = "insert into users (email, full_name, password, role, username) values(?,?,?,?,?);";
-
-    //language=SQL
-    private String INSERT_MASTER = "insert into masters (id,instagram,position, image_path) values(?,?,?,?);";
-
-    //language=SQL
-    private String INSERT_MASTER_SERVICE = "insert into master_service (master_id, service_id) values(?,?);";
 
     private Connection connection;
 
+    private String FIND_ALL_MASTERS;
+    private String FIND_MASTER_BY_ID;
+    private String INSERT_USER;
+    private String INSERT_MASTER;
+    private String INSERT_MASTER_SERVICE;
+
     JDBCMasterDao(Connection connection) {
+        try (InputStream inputStream =
+                     getClass().getClassLoader().getResourceAsStream(QUERY_PROPERTIES_FILE_PATH)){
+            Properties prop = new Properties();
+            prop.load(inputStream);
+
+            FIND_ALL_MASTERS = prop.getProperty(FIND_ALL_MASTERS_PROP_NAME);
+            FIND_MASTER_BY_ID = prop.getProperty(FIND_MASTER_BY_ID_PROP_NAME);
+            INSERT_USER = prop.getProperty(INSERT_USER_PROP_NAME);
+            INSERT_MASTER = prop.getProperty(INSERT_MASTER_PROP_NAME);
+            INSERT_MASTER_SERVICE = prop.getProperty(INSERT_MASTER_SERVICE_PROP_NAME);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         this.connection = connection;
     }
 
@@ -101,6 +90,14 @@ public class JDBCMasterDao implements MasterDao {
 
             connection.commit();
 
+        } catch (SQLIntegrityConstraintViolationException e){
+            e.printStackTrace();
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            throw new UserAlreadyExistsException(e);
         } catch (SQLException e) {
             e.printStackTrace();
             try {
@@ -108,6 +105,7 @@ public class JDBCMasterDao implements MasterDao {
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
+            throw new RuntimeException(e);
         }
     }
 

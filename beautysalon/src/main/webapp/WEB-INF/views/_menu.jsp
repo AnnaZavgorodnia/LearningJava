@@ -10,55 +10,42 @@
             <div class="header__logo"><fmt:message key="header.logo" /></div>
             <nav class="header__nav">
                 <ul>
-                    <li class="nav__link"
-                        <c:if test="${module == 'index'}">class="active"</c:if>
-                    >
+                    <li class="${module eq 'index' ? 'nav__link active': 'nav__link'}">
                         <a class="nav__sublink"
                            href="${pageContext.request.contextPath}/"><fmt:message key="header.menu.home"/></a>
                     </li>
                     <c:if test="${not empty loginedUser && loginedUser.role == 'CLIENT'}">
-                        <li class="nav__link"
-                            <c:if test="${module == 'masters'}">class="active"</c:if>
-                        >
+                        <li class="${module eq 'masters' ? 'nav__link active': 'nav__link'}">
                             <a class="nav__sublink"
                                href="${pageContext.request.contextPath}/app/masters"><fmt:message key="header.menu.masters"/></a>
                         </li>
                     </c:if>
                     <c:if test="${not empty loginedUser && (loginedUser.role == 'ADMIN' || loginedUser.role == 'MASTER')}">
-                        <li class="nav__link"
-                            <c:if test="${module == 'all_appointments'}">class="active"</c:if>
-                        >
+                        <li class="${module eq 'all_appointments' ? 'nav__link active': 'nav__link'}">
                             <a class="nav__sublink"
                                href="${pageContext.request.contextPath}/app/all_appointments"><fmt:message key="header.menu.all_appoinments"/></a>
                         </li>
                     </c:if>
                     <c:if test="${not empty loginedUser && loginedUser.role == 'ADMIN'}">
-                        <li class="nav__link"
-                            <c:if test="${module == 'create_master'}">class="active"</c:if>
-                        >
+                        <li class="${module eq 'add_master' ? 'nav__link active': 'nav__link'}">
                             <a class="nav__sublink"
-                               href="${pageContext.request.contextPath}/app/create_master"><fmt:message key="header.menu.create_master"/></a>
+                               href="${pageContext.request.contextPath}/app/add_master"><fmt:message key="header.menu.create_master"/></a>
                         </li>
                     </c:if>
                     <c:if test="${empty loginedUser}">
-                        <li class="nav__link"
-                            <c:if test="${module == 'login'}">class="active"</c:if>>
+                        <li class="${module eq 'login' ? 'nav__link active': 'nav__link'}">
                             <a class="nav__sublink"
                                href="${pageContext.request.contextPath}/app/login"><fmt:message key="header.menu.login"/></a>
                         </li>
                     </c:if>
                     <c:if test="${empty loginedUser}">
-                        <li class="nav__link"
-                            <c:if test="${module == 'registration'}">class="active"</c:if>
-                        >
+                        <li class="${module eq 'registration' ? 'nav__link active': 'nav__link'}">
                             <a class="nav__sublink"
                                href="${pageContext.request.contextPath}/app/registration"><fmt:message key="header.menu.register"/></a>
                         </li>
                     </c:if>
                     <c:if test="${not empty loginedUser}">
-                        <li class="nav__link"
-                            <c:if test="${module == 'my_appointments'}">class="active"</c:if>
-                        >
+                        <li class="${module eq 'my_appointments' ? 'nav__link active': 'nav__link'}">
                             <span class="nav__sublink"><fmt:message key="header.menu.account"/></span>
                             <ul class="nav__drop__menu">
                                 <c:if test="${not empty loginedUser && loginedUser.role == 'CLIENT'}">
@@ -69,7 +56,9 @@
                                 </c:if>
                                 <li>
                                     <a class="nav__menu__content"
-                                       href="${pageContext.request.contextPath}/app/logout"><fmt:message key="header.menu.logout"/></a>
+                                       href="${pageContext.request.contextPath}/app/logout">
+                                        <fmt:message key="header.menu.logout"/>
+                                    </a>
                                 </li>
                             </ul>
                         </li>

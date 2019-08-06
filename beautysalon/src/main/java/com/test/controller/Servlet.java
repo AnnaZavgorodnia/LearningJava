@@ -7,6 +7,7 @@ import com.test.model.service.MasterService;
 import com.test.model.service.SalonServicesService;
 import com.test.model.service.UserService;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 @WebServlet({ "/app/*" })
@@ -23,7 +25,11 @@ public class Servlet extends HttpServlet {
 
     private Map<String, Command> commands = new HashMap<>();
 
-    public void init(){
+    public void init(ServletConfig servletConfig){
+
+        servletConfig.getServletContext()
+                .setAttribute("loggedUsers", new HashSet<String>());
+
         commands.put("users",
                 new AllUsersCommand(new UserService()));
         commands.put("exception" , new ExceptionCommand());
@@ -38,8 +44,7 @@ public class Servlet extends HttpServlet {
         commands.put("registration", new RegistrationCommand(new UserService()));
         commands.put("api/appointments", new MasterAppointmentsApiCommand(new AppointmentService()));
         commands.put("create_appointment", new CreateAppointmentCommand(new AppointmentService()));
-        commands.put("create_master", new CreateMasterPageCommand(new SalonServicesService()));
-        commands.put("add_master", new CreateMasterCommand(new MasterService()));
+        commands.put("add_master", new CreateMasterCommand(new MasterService(), new SalonServicesService()));
         commands.put("me/appointments/delete", new DeleteClientAppointment(new AppointmentService()));
     }
 

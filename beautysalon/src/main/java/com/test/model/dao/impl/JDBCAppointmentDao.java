@@ -4,91 +4,40 @@ import com.test.model.dao.AppointmentDao;
 import com.test.model.dao.mapper.*;
 import com.test.model.entity.*;
 
+import java.io.InputStream;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.*;
+
+import static com.test.model.dao.impl.QueryConstants.*;
 
 public class JDBCAppointmentDao implements AppointmentDao {
 
     private Connection connection;
 
-    //language=SQL
-    private String FIND_APPOINTMENTS_BY_CLIENT_USERNAME = "select app_id, app_date, app_time, m_id, m_full_name,\n" +
-            "       m_position, m_email, m_password, m_username, m_image_path,\n" +
-            "       m_instagram, m_role, id s_id, name s_name, price s_price, c_id,\n" +
-            "       c_username, c_full_name, c_email, c_password,c_role from\n" +
-            "    (select * from\n" +
-            "        (select ap.id app_id, app_date, app_time, master_id, service_id,\n" +
-            "                c.id c_id, username c_username, email c_email, password c_password, role c_role, full_name c_full_name\n" +
-            "        from all_appointments ap\n" +
-            "            inner join\n" +
-            "                (clients c inner join users u on c.id = u.id)\n" +
-            "            on ap.client_id = c.id\n" +
-            "        where username=?) f\n" +
-            "            left join\n" +
-            "            (select m.id m_id, full_name m_full_name, position m_position, email m_email, " +
-            "               username m_username, password m_password, role m_role, instagram m_instagram, image_path m_image_path\n" +
-            "            from masters m\n" +
-            "                inner join users u2\n" +
-            "                    on m.id = u2.id) f1\n" +
-            "                on f.master_id=m_id) f3\n" +
-            "left join services ss on f3.service_id=ss.id;";
-
-    //language=SQL
-    private String DELETE_APPOINTMENT_BY_ID = "delete from all_appointments where id=(?);";
-
-    //language=SQL
-    private String FIND_APPOINTMENTS_BY_MASTER_USERNAME = "select app_id, app_date, app_time, m_id, m_full_name,\n" +
-            "       m_position, m_email, m_password, m_username, m_image_path,\n" +
-            "       m_instagram, m_role, id s_id, name s_name, price s_price, c_id,\n" +
-            "       c_username, c_full_name, c_email, c_password,c_role from\n" +
-            "    (select * from\n" +
-            "        (select ap.id app_id, app_date, app_time, client_id, service_id,\n" +
-            "                m_id, m_full_name, m_position, m_email, m_username, m_password,\n" +
-            "                m_role, m_instagram, m_image_path\n" +
-            "         from all_appointments ap\n" +
-            "                  inner join\n" +
-            "              (select m.id m_id, full_name m_full_name, position m_position, email m_email, " +
-            "               username m_username, password m_password, role m_role, instagram m_instagram, image_path m_image_path\n" +
-            "               from masters m\n" +
-            "                        inner join users u2\n" +
-            "                                   on m.id = u2.id) ms\n" +
-            "                on ap.master_id=ms.m_id\n"+
-            "         where m_username=?) f\n" +
-            "            left join\n" +
-            "              (select c.id c_id, username c_username, email c_email, password c_password, role c_role, full_name c_full_name from clients c inner join users u on c.id = u.id) cs\n" +
-            "              on client_id = c_id) f1\n" +
-            "        left join services ss on f1.service_id=ss.id;";
-
-    //language=SQL
-    private String FIND_ALL_APPOINTMENTS = "select app_id, app_date, app_time, m_id, m_full_name,\n" +
-            "       m_position, m_email, m_password, m_username, m_image_path,\n" +
-            "       m_instagram, m_role, id s_id, name s_name, price s_price, c_id,\n" +
-            "       c_username, c_full_name, c_email, c_password,c_role from\n" +
-            "    (select * from\n" +
-            "        (select ap.id app_id, app_date, app_time, master_id, service_id,\n" +
-            "                c.id c_id, username c_username, email c_email, password c_password, role c_role, full_name c_full_name\n" +
-            "         from all_appointments ap\n" +
-            "                  inner join\n" +
-            "              (clients c inner join users u on c.id = u.id)\n" +
-            "              on ap.client_id = c.id) f\n" +
-            "            left join\n" +
-            "        (select m.id m_id, full_name m_full_name, position m_position, email m_email, username m_username, " +
-            "           password m_password, role m_role, instagram m_instagram, image_path m_image_path\n" +
-            "         from masters m\n" +
-            "                  inner join users u2\n" +
-            "                             on m.id = u2.id) f1\n" +
-            "        on f.master_id=m_id) f3\n" +
-            "        left join services ss on f3.service_id=ss.id;";
-
-    //language=SQL
-    private String FIND_APPOINTMENTS_BY_MASTER_ID_AND_DATE = "select ap.id app_id, app_date, app_time from all_appointments ap where master_id=(?) and app_date=(?)";
-
-    //language=SQL
-    private String INSERT_APPOINTMENT = "insert into all_appointments (app_date, app_time, client_id, master_id, service_id)\n" +
-            "values (?,?,?,?,?);";
+    private String FIND_APPOINTMENTS_BY_CLIENT_USERNAME;
+    private String DELETE_APPOINTMENT_BY_ID;
+    private String FIND_APPOINTMENTS_BY_MASTER_USERNAME;
+    private String FIND_ALL_APPOINTMENTS;
+    private String FIND_APPOINTMENTS_BY_MASTER_ID_AND_DATE;
+    private String INSERT_APPOINTMENT;
 
     JDBCAppointmentDao(Connection connection) {
+        try (InputStream inputStream =
+                     getClass().getClassLoader().getResourceAsStream(QUERY_PROPERTIES_FILE_PATH)){
+            Properties prop = new Properties();
+            prop.load(inputStream);
+
+            FIND_APPOINTMENTS_BY_CLIENT_USERNAME = prop.getProperty(FIND_APPOINTMENTS_BY_CLIENT_USERNAME_PROP_NAME);
+            DELETE_APPOINTMENT_BY_ID = prop.getProperty(DELETE_APPOINTMENT_BY_ID_PROP_NAME);
+            FIND_APPOINTMENTS_BY_MASTER_USERNAME = prop.getProperty(FIND_APPOINTMENTS_BY_MASTER_USERNAME_PROP_NAME);
+            FIND_ALL_APPOINTMENTS = prop.getProperty(FIND_ALL_APPOINTMENTS_PROP_NAME);
+            FIND_APPOINTMENTS_BY_MASTER_ID_AND_DATE = prop.getProperty(FIND_APPOINTMENTS_BY_MASTER_ID_AND_DATE_PROP_NAME);
+            INSERT_APPOINTMENT = prop.getProperty(INSERT_APPOINTMENT_PROP_NAME);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         this.connection = connection;
     }
 

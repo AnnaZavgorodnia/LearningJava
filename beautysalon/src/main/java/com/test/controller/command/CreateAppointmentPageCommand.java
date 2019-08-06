@@ -18,6 +18,7 @@ public class CreateAppointmentPageCommand implements Command {
         Long id = Long.valueOf(request.getParameter("masterId"));
         Master master = masterService.findById(id).get();
         request.setAttribute("master", master);
+        request.setAttribute("module", "masters");
         return "/WEB-INF/views/createAppView.jsp";
     }
 }

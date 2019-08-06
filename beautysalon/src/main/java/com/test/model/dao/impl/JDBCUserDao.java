@@ -3,29 +3,40 @@ package com.test.model.dao.impl;
 import com.test.model.dao.UserDao;
 import com.test.model.dao.mapper.UserMapper;
 import com.test.model.entity.User;
+import com.test.model.exception.UserAlreadyExistsException;
 
+import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
+
+import static com.test.model.dao.impl.QueryConstants.*;
 
 public class JDBCUserDao implements UserDao {
 
     private Connection connection;
 
-    //language=SQL
-    private String FIND_USER_BY_USERNAME = "select * from users where username = (?)";
-
-    //language=SQL
-    private String FIND_ALL_USERS = "select * from users";
-
-    //language=SQL
-    private String INSERT_USER = "insert into users (email, full_name, password, role, username) values(?,?,?,?,?);";
-
-    //language=SQL
-    private String INSERT_CLIENT = "insert into clients (id) values(?);";
+    private String FIND_USER_BY_USERNAME;
+    private String FIND_ALL_USERS;
+    private String INSERT_USER;
+    private String INSERT_CLIENT;
 
     JDBCUserDao(Connection connection) {
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(QUERY_PROPERTIES_FILE_PATH)){
+            Properties prop = new Properties();
+            prop.load(inputStream);
+
+            FIND_USER_BY_USERNAME = prop.getProperty(FIND_USER_BY_USERNAME_PROP_NAME);
+            FIND_ALL_USERS =  prop.getProperty(FIND_ALL_USERS_PROP_NAME);
+            INSERT_USER = prop.getProperty(INSERT_USER_PROP_NAME);
+            INSERT_CLIENT = prop.getProperty(INSERT_CLIENT_PROP_NAME);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         this.connection = connection;
     }
 
@@ -87,6 +98,14 @@ public class JDBCUserDao implements UserDao {
 
             connection.commit();
 
+        } catch (SQLIntegrityConstraintViolationException e){
+            e.printStackTrace();
+            try {
+                connection.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            throw new UserAlreadyExistsException(e);
         } catch (SQLException e) {
             e.printStackTrace();
             try {
@@ -94,6 +113,7 @@ public class JDBCUserDao implements UserDao {
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
+            throw new RuntimeException(e);
         }
     }
 

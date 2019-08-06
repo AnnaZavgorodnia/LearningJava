@@ -31,32 +31,95 @@
                       enctype="multipart/form-data">
                     <div class="row">
                         <div class="input-field col s6">
-                            <input name="firstName" id="firstName" type="text" class="validate" required>
+                            <input name="firstName"
+                                   id="firstName"
+                                   type="text"
+                                   class="validate"
+                                    <c:if test="${not empty firstName}">
+                                           value="${firstName}"
+                                    </c:if>
+                                   required>
                             <label for="firstName"><fmt:message key="registration.page.first.name"/></label>
+                            <c:if test="${not empty firstNameError}">
+                                <span class="helper-text" style="color: darkred"><fmt:message key="registration.page.first.name.error"/></span>
+                            </c:if>
                         </div>
                         <div class="input-field col s6">
-                            <input name="lastName" id="lastName" type="text" class="validate" required>
+                            <input name="lastName"
+                                   id="lastName"
+                                   type="text"
+                                   class="validate"
+                                    <c:if test="${not empty lastName}">
+                                           value="${lastName}"
+                                    </c:if>
+                                   required>
                             <label for="lastName"><fmt:message key="registration.page.last.name"/></label>
+                            <c:if test="${not empty lastNameError}">
+                                <span class="helper-text" style="color: darkred"><fmt:message key="registration.page.last.name.error"/></span>
+                            </c:if>
                         </div>
                     </div>
                     <div class="row">
                         <div class="input-field col s6">
-                            <input name="username" id="username" type="text" class="validate" required>
+                            <input name="username"
+                                   id="username"
+                                   type="text"
+                                   class="validate"
+                                    <c:if test="${not empty username}">
+                                           value="${username}"
+                                    </c:if>
+                                   required>
                             <label for="username"><fmt:message key="registration.page.username"/></label>
+                            <c:if test="${not empty usernameError}">
+                                <span class="helper-text" style="color: darkred"><fmt:message key="registration.page.username.error"/></span>
+                            </c:if>
+                            <c:if test="${not empty userExistsError}">
+                                <span class="helper-text" style="color: darkred"><fmt:message key="registration.page.user.exists.error"/></span>
+                            </c:if>
                         </div>
                         <div class="input-field col s6">
-                            <input name="password" id="password" type="password" class="validate" required>
+                            <input name="password"
+                                   id="password"
+                                   type="password"
+                                   class="validate"
+                                    <c:if test="${not empty password}">
+                                           value="${password}"
+                                    </c:if>
+                                   required>
                             <label for="password"><fmt:message key="registration.page.password"/></label>
+                            <c:if test="${not empty passwordError}">
+                                <span class="helper-text" style="color: darkred"><fmt:message key="registration.page.password.error"/></span>
+                            </c:if>
                         </div>
                     </div>
                     <div class="row">
                         <div class="input-field col s6">
-                            <input name="email" id="email" type="email" class="validate" required>
+                            <input name="email"
+                                   id="email"
+                                   type="email"
+                                   class="validate"
+                                    <c:if test="${not empty email}">
+                                           value="${email}"
+                                    </c:if>
+                                   required>
                             <label for="email"><fmt:message key="registration.page.email"/></label>
+                            <c:if test="${not empty emailError}">
+                                <span class="helper-text" style="color: darkred"><fmt:message key="registration.page.email.error"/></span>
+                            </c:if>
                         </div>
                         <div class="input-field col s6">
-                            <input name="instagram" id="instagram" type="text" class="validate" required>
+                            <input name="instagram"
+                                   id="instagram"
+                                   type="text"
+                                   class="validate"
+                                    <c:if test="${not empty instagram}">
+                                           value="${instagram}"
+                                    </c:if>
+                                   required>
                             <label for="instagram"><fmt:message key="create.master.instagram.label"/></label>
+                            <c:if test="${not empty instagramError}">
+                                <span class="helper-text" style="color: darkred"><fmt:message key="registration.page.instagram.error"/></span>
+                            </c:if>
                         </div>
                     </div>
                     <div class="row">

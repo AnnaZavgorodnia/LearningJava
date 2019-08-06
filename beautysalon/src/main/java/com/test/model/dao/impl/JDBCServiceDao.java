@@ -4,6 +4,7 @@ import com.test.model.dao.ServiceDao;
 import com.test.model.dao.mapper.ServiceMapper;
 import com.test.model.entity.Service;
 
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -11,17 +12,29 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
+
+import static com.test.model.dao.impl.QueryConstants.FIND_ALL_SERVICES_PROP_NAME;
+import static com.test.model.dao.impl.QueryConstants.QUERY_PROPERTIES_FILE_PATH;
 
 public class JDBCServiceDao implements ServiceDao {
 
     private Connection connection;
+    private String FIND_ALL_SERVICES;
+
 
     JDBCServiceDao(Connection connection) {
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(QUERY_PROPERTIES_FILE_PATH)){
+            Properties prop = new Properties();
+            prop.load(inputStream);
+
+            FIND_ALL_SERVICES = prop.getProperty(FIND_ALL_SERVICES_PROP_NAME);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         this.connection = connection;
     }
-
-    //language=SQL
-    private String FIND_ALL_SERVICES = "select id s_id, name s_name, price s_price from services ss;";
 
     @Override
     public void create(Service entity) {
