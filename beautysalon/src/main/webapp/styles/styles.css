@@ -560,3 +560,7 @@ nav{
 .fc-slats table{
     height: 500px; !important;
 }
+
+/* modal */
+
+.modal { width: 40% !important ;}

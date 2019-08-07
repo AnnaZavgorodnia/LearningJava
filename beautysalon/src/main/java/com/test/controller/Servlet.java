@@ -46,6 +46,7 @@ public class Servlet extends HttpServlet {
         commands.put("create_appointment", new CreateAppointmentCommand(new AppointmentService()));
         commands.put("add_master", new CreateMasterCommand(new MasterService(), new SalonServicesService()));
         commands.put("me/appointments/delete", new DeleteClientAppointment(new AppointmentService()));
+        commands.put("all_masters", new AllMastersAdminCommand(new MasterService()));
     }
 
     public void doGet(HttpServletRequest request,

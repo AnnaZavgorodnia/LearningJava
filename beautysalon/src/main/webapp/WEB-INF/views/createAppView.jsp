@@ -57,8 +57,28 @@
         </div>
     </section>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <div id="modal" class="modal" style="width: 40%">
+        <div class="modal-content">
+            <div class="row">
+                <div class="col s6" style="font-size: 20px">
+                    <p id="master-modal">Master: ${master.fullName}</p>
+                    <p id="service-modal"></p>
+                    <p id="price-modal"></p>
+                    <p id="date-modal"></p>
+                    <p id="time-modal"></p>
+                </div>
+                <div class="col s6 center-align">
+                    <img style="width: 60%" src="${pageContext.request.contextPath}/masters/${master.imagePath}">
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="modal-close waves-effect waves-red btn-flat">Cancel</button>
+            <button type="button" id="button-book" class="modal-close waves-effect waves-green btn-flat">Book</button>
+        </div>
+    </div>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <script src="${pageContext.request.contextPath}/js/book_app.js"></script>
+    <script src="${pageContext.request.contextPath}/js/create_app.js"></script>
 </body>
 </html>

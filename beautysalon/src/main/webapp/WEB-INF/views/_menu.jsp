@@ -32,6 +32,12 @@
                                href="${pageContext.request.contextPath}/app/add_master"><fmt:message key="header.menu.create_master"/></a>
                         </li>
                     </c:if>
+                    <c:if test="${not empty loginedUser && loginedUser.role == 'ADMIN'}">
+                        <li class="${module eq 'all_masters' ? 'nav__link active': 'nav__link'}">
+                            <a class="nav__sublink"
+                               href="${pageContext.request.contextPath}/app/all_masters"><fmt:message key="header.menu.admin.all.masters"/></a>
+                        </li>
+                    </c:if>
                     <c:if test="${empty loginedUser}">
                         <li class="${module eq 'login' ? 'nav__link active': 'nav__link'}">
                             <a class="nav__sublink"

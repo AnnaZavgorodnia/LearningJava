@@ -26,7 +26,8 @@ public class SecurityConfig {
                 "all_appointments",
                 "api/appointments",
                 "create_master",
-                "add_master"));
+                "add_master",
+                "all_masters"));
 
         securedRoutes.put(Role.MASTER, Arrays.asList(
                 "all_appointments",

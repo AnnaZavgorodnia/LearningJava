@@ -5,6 +5,9 @@ document.addEventListener('DOMContentLoaded', function() {
     let elems = document.querySelectorAll('select');
     let instances = M.FormSelect.init(elems,{});
 
+    var elems_modal = document.querySelectorAll('modal');
+    var instances_modal = M.Modal.init(elems_modal,{});
+
     document.getElementById("select-service").addEventListener("change",function(e){
         console.log(e.target);
         let inp = document.getElementById('select-service').M_FormSelect.input.value;
@@ -65,11 +68,12 @@ function createSchedule(time, data){
     let title = document.createElement("h4");
     title.innerHTML = time;
     let btn = document.createElement("button");
-    btn.addEventListener("click", makeApp);
+    btn.addEventListener("click", fullModal);
     btn.innerHTML = "book";
     btn.setAttribute("class","btn-black btn-active");
     btn.setAttribute("id",time);
     btn.dataset.time = time;
+    btn.dataset.target = "modal";
     data.forEach(el => {
         if(el.appTime.hour-3 === 9)
             datetext = "09";
@@ -96,43 +100,47 @@ function setTime(e){
         e.target.dataset.time;
 }
 
-function makeApp(e){
+function fullModal(e) {
 
-    setTime(e);
-
-    let someDate = document.getElementsByClassName('datepicker')[0];
-    let instance = M.Datepicker.getInstance(someDate);
-    let idate = instance.date;
-
-    let finalDate = new Date(idate.getFullYear(),
-        idate.getMonth(),
-        idate.getDate(),
-        e.target.dataset.time.substring(0,2));
-    console.log(finalDate);
-    finalDate.setHours(finalDate.getHours()+3);
-
-    let master_id = document.getElementById("master_id").value;
-    let appDate = finalDate.toISOString().substring(0,10);
-    let appTime = finalDate.toISOString().substring(11,19);
-    let serviceName = document.getElementById('select-service').M_FormSelect.input.value;
-    let serviceElement = document.getElementById(serviceName);
-    if(serviceElement == null){
-        console.log(true);
-        document.getElementById("select_label").style.color = "red";
-
-    } else{
-
-        let serviceId = serviceElement.value;
-
-        console.log(master_id);
-        console.log(appDate);
-        console.log(appTime);
-        console.log(serviceId);
-
-        fetch(`http://localhost:8888/app/create_appointment?masterId=${master_id}&appDate=${appDate}&appTime=${appTime}&serviceId=${serviceId}`)
-            .then(data => {
-                document.getElementById(appTime.substring(0,5)).setAttribute("class","btn-black btn-disabled");
-            })
-            .catch(e => console.log(e));
-    }
 }
+
+// function makeApp(e){
+//
+//     setTime(e);
+//
+//     let someDate = document.getElementsByClassName('datepicker')[0];
+//     let instance = M.Datepicker.getInstance(someDate);
+//     let idate = instance.date;
+//
+//     let finalDate = new Date(idate.getFullYear(),
+//         idate.getMonth(),
+//         idate.getDate(),
+//         e.target.dataset.time.substring(0,2));
+//     console.log(finalDate);
+//     finalDate.setHours(finalDate.getHours()+3);
+//
+//     let master_id = document.getElementById("master_id").value;
+//     let appDate = finalDate.toISOString().substring(0,10);
+//     let appTime = finalDate.toISOString().substring(11,19);
+//     let serviceName = document.getElementById('select-service').M_FormSelect.input.value;
+//     let serviceElement = document.getElementById(serviceName);
+//     if(serviceElement == null){
+//         console.log(true);
+//         document.getElementById("select_label").style.color = "red";
+//
+//     } else{
+//
+//         let serviceId = serviceElement.value;
+//
+//         console.log(master_id);
+//         console.log(appDate);
+//         console.log(appTime);
+//         console.log(serviceId);
+//
+//         fetch(`http://localhost:8888/app/create_appointment?masterId=${master_id}&appDate=${appDate}&appTime=${appTime}&serviceId=${serviceId}`)
+//             .then(data => {
+//                 document.getElementById(appTime.substring(0,5)).setAttribute("class","btn-black btn-disabled");
+//             })
+//             .catch(e => console.log(e));
+//     }
+// }

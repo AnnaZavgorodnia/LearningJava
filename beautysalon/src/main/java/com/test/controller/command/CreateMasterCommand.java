@@ -108,8 +108,7 @@ public class CreateMasterCommand implements Command {
 
         saveImage(request, imagePath, filePart);
 
-        //todo redirect to all masters
-        return "/WEB-INF/views/createMasterView.jsp";
+        return "redirect:/app/all_masters";
     }
 
     private void saveImage(HttpServletRequest request,String imagePath, Part filePart){
